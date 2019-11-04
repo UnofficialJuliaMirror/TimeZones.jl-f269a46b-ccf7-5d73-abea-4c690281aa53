@@ -14,8 +14,13 @@ const COMPILED_DIR = joinpath(DEPS_DIR, "compiled")
 export ARCHIVE_DIR, TZ_SOURCE_DIR, COMPILED_DIR, REGIONS, LEGACY_REGIONS
 
 function __init__()
-    if Sys.iswindows()
-        global exe7z = joinpath(Sys.BINDIR, "7z.exe")
+    @static if Sys.iswindows()
+        # https://github.com/JuliaLang/julia/pull/33592
+        global exe7z = if VERSION >= v"1.4.0-DEV.349"
+            joinpath(Sys.BINDIR, "7z.exe")
+        else
+            joinpath(Sys.BINDIR, "..", "libexec", "7z.exe")
+        end
     end
 end
 
